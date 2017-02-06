@@ -26,16 +26,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static android.R.id.list;
 
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity{
     private EditText tTrans;
     private TextView tResult;
-     private Button btTranslate;
+    private Button btTranslate;
 
     private Gson gson = new GsonBuilder().create();
 
     private final String KEY = "trnsl.1.1.20170204T100119Z.4cfbceb022d57915.c672169baf48fcaa7d05af50ab3798748a3ee1e2";
-
     private final String URL = "https://translate.yandex.net/";
 
     private Retrofit retrofit = new Retrofit.Builder()
