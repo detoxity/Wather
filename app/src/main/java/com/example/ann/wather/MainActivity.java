@@ -32,33 +32,23 @@ public class MainActivity extends AppCompatActivity{
     private EditText tTrans;
     private TextView tResult;
     private Button btTranslate;
-
-
     private Gson gson = new GsonBuilder().create();
-
     private final String KEY = "trnsl.1.1.20170204T100119Z.4cfbceb022d57915.c672169" +
             "baf48fcaa7d05af50ab3798748a3ee1e2";
     private final String URL = "https://translate.yandex.net/";
-
     private Retrofit retrofit = new Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(URL)
             .build();
-
-
     private Link intf = retrofit.create(Link.class);
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
         tTrans = (EditText) findViewById(R.id.etTranslate);
         tResult = (TextView) findViewById(R.id.result);
         btTranslate = (Button) findViewById(R.id.btnTranslate);
-
         btTranslate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,40 +56,32 @@ public class MainActivity extends AppCompatActivity{
                 mapJson.put("key", KEY);
                 mapJson.put("lang", "en-ru");
                 mapJson.put("text", tTrans.getText().toString());
-
-
                 Call<Object> call = intf.translate(mapJson);
-
-
-                    Response<Object> response = call.enqueue(new Callback<Object>() {
-
+                Response<Object> response = call.enqueue(new Callback<Object>() {
                         @Override
                         public void onResponse(Call<Object> call, retrofit2.Response<Object> response){
-                          //  Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
-
-
+                            Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
                             for (Map.Entry e : map.entrySet()) {
                                 if(e.getKey().equals("text")) {
                                     tResult.setText(e.getValue().toString());
                                 }
 
-                            }}
-
-
+                            }
+                        }
                         @Override
                         public void onFailure(Call<Object> call, Throwable Object) {
-
                         }
-                    });
+                });
             }
 
 
 
 
-            });
+        });
 
 
-    }}
+    }
+}
 
 
 
