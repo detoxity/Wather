@@ -9,22 +9,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.os.AsyncTask;
-
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 import static android.R.id.list;
 
 
@@ -52,24 +48,33 @@ public class MainActivity extends AppCompatActivity{
         btTranslate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Создаем запрос
                 Map<String, String> mapJson = new HashMap<String, String>();
                 mapJson.put("key", KEY);
                 mapJson.put("lang", "en-ru");
                 mapJson.put("text", tTrans.getText().toString());
+
+                //Отправляем асинхронный запрос
                 Call<Object> call = intf.translate(mapJson);
-                Response<Object> response = call.enqueue(new Callback<Object>() {
+                call.enqueue(new Callback<Object>() {
                         @Override
-                        public void onResponse(Call<Object> call, retrofit2.Response<Object> response){
-                            Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
-                            for (Map.Entry e : map.entrySet()) {
+                        public void onResponse(Call<Object> call, Response<Object> response){
+                            if (response.isSuccessful()){
+
+                                // Парсим Json
+                                Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
+                              for (Map.Entry e : map.entrySet()) {
                                 if(e.getKey().equals("text")) {
+
+                                    //Выводим ответ.
                                     tResult.setText(e.getValue().toString());
                                 }
-
+                              }
                             }
                         }
                         @Override
-                        public void onFailure(Call<Object> call, Throwable Object) {
+                        public void onFailure(Call<Object> call, Throwable t) {
                         }
                 });
             }
@@ -85,5 +90,5 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-
+   //Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
 
