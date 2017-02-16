@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.os.AsyncTask;
+
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,9 +33,11 @@ public class MainActivity extends AppCompatActivity{
     private TextView tResult;
     private Button btTranslate;
 
+
     private Gson gson = new GsonBuilder().create();
 
-    private final String KEY = "trnsl.1.1.20170204T100119Z.4cfbceb022d57915.c672169baf48fcaa7d05af50ab3798748a3ee1e2";
+    private final String KEY = "trnsl.1.1.20170204T100119Z.4cfbceb022d57915.c672169" +
+            "baf48fcaa7d05af50ab3798748a3ee1e2";
     private final String URL = "https://translate.yandex.net/";
 
     private Retrofit retrofit = new Retrofit.Builder()
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity{
 
 
     private Link intf = retrofit.create(Link.class);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,22 +69,37 @@ public class MainActivity extends AppCompatActivity{
 
 
                 Call<Object> call = intf.translate(mapJson);
-                    try {
-                    Response<Object> response = call.execute();
 
-                    Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
-                    for (Map.Entry e : map.entrySet()) {
-                        System.out.println(e.getKey() + " " + e.getValue());
-                    }
 
-                } catch (IOException e) {
-                }
+                    Response<Object> response = call.enqueue(new Callback<Object>() {
+
+                        @Override
+                        public void onResponse(Call<Object> call, retrofit2.Response<Object> response){
+                          //  Map<String, String> map = gson.fromJson(response.body().toString(), Map.class);
+
+
+                            for (Map.Entry e : map.entrySet()) {
+                                if(e.getKey().equals("text")) {
+                                    tResult.setText(e.getValue().toString());
+                                }
+
+                            }}
+
+
+                        @Override
+                        public void onFailure(Call<Object> call, Throwable Object) {
+
+                        }
+                    });
             }
 
-        });
+
+
+
+            });
+
+
     }}
-
-
 
 
 
