@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ButtonBarLayout;
 import android.support.v7.widget.SearchView;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,11 +39,28 @@ public class MainActivity extends AppCompatActivity{
             .baseUrl(URL)
             .build();
     private Link intf = retrofit.create(Link.class);
+    TextView tnIN, tnOUT;
+    final int RU = 1;
+    final int EN = 2;
+    final int DE = 3;
+    final int RUq = 4;
+    final int ENq = 5;
+    final int DEq = 6;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        tnIN = (TextView) findViewById(R.id.tnIN);
+        tnOUT = (TextView) findViewById(R.id.tnOUT);
+
+        registerForContextMenu(tnIN);
+        registerForContextMenu(tnOUT);
+
         tTrans = (EditText) findViewById(R.id.etTranslate);
         tResult = (TextView) findViewById(R.id.result);
         btTranslate = (Button) findViewById(R.id.btnTranslate);
@@ -52,7 +71,7 @@ public class MainActivity extends AppCompatActivity{
                 //Создаем запрос
                 Map<String, String> mapJson = new HashMap<String, String>();
                 mapJson.put("key", KEY);
-                mapJson.put("lang", "en-ru");
+                mapJson.put("lang", tnIN.getText().toString() + "-" + tnOUT.getText().toString());
                 mapJson.put("text", tTrans.getText().toString());
 
                 //Отправляем асинхронный запрос
@@ -84,7 +103,51 @@ public class MainActivity extends AppCompatActivity{
 
         });
 
+ }
 
+@Override
+    public void onCreateContextMenu (ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        switch (v.getId()) {
+            case R.id.tnIN:
+                menu.add(0, RU, 0, "RUS");
+                menu.add(0, EN, 0, "EN");
+                menu.add(0, DE, 0, "DE");
+                break;
+            case R.id.tnOUT:
+                menu.add(0, RUq, 0, "RUS");
+                menu.add(0, ENq, 0, "EN");
+                menu.add(0, DEq, 0, "DE");
+                break;
+        }
+    }
+
+@Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            // пункты меню для tvColor
+            case RU:
+                tnIN.setText("ru");
+                break;
+            case EN:
+                tnIN.setText("en");
+                break;
+            case DE:
+                tnIN.setText("de");
+                break;
+            // пункты меню для tvSize
+            case RUq:
+                tnOUT.setText("ru");
+                break;
+            case ENq:
+                tnOUT.setText("en");
+                break;
+            case DEq:
+                tnOUT.setText("de");
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }
 

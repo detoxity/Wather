@@ -30,4 +30,20 @@
         android:id="@+id/result"
         android:layout_weight="0.15">
     </TextView>
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tnIN"
+        android:layout_weight="0.06" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tnOUT"
+        android:layout_weight="0.06" />
+
+
 </LinearLayout>
